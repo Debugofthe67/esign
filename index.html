@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Install ESign</title>
+  <style>
+    /* Background with depth and soft color */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(180,200,255,0.35), transparent 60%),
+        radial-gradient(1000px 500px at 90% 10%, rgba(255,210,230,0.35), transparent 60%),
+        linear-gradient(135deg, #cfd9ff 0%, #e9eef7 50%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem 1rem 6.5rem; /* bottom space for nav bar */
+      color: #111;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* Dark mode */
+    body.dark-mode {
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(40,60,120,0.18), transparent 60%),
+        radial-gradient(1000px 500px at 90% 10%, rgba(100,40,120,0.18), transparent 60%),
+        linear-gradient(135deg, #141414 0%, #1d1f22 50%, #232527 100%);
+      color: #eaecef;
+    }
+    body.dark-mode .glass-container {
+      background: rgba(28, 30, 34, 0.5);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 1px 14px rgba(255,255,255,0.12), 0 18px 50px rgba(0,0,0,0.35);
+    }
+    body.dark-mode .card-glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: inset 0 1px 8px rgba(255,255,255,0.16), 0 10px 28px rgba(0,0,0,0.28);
+    }
+    body.dark-mode .app-title { color: #f5f7fa; }
+    body.dark-mode .app-meta { color: #b9c0c7; }
+    body.dark-mode .get-button {
+      background: linear-gradient(160deg, rgba(0,122,255,0.95) 0%, rgba(40,132,255,0.8) 50%, rgba(60,142,255,0.7) 100%);
+      box-shadow: 0 8px 22px rgba(10,132,255,0.35), inset 0 1px 6px rgba(255,255,255,0.4);
+    }
+    body.dark-mode .bottom-bar {
+      background: rgba(28,30,34,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 1px 8px rgba(255,255,255,0.1), 0 8px 20px rgba(0,0,0,0.35);
+    }
+    body.dark-mode .nav-link { color: #9cc7ff; }
+    body.dark-mode .nav-link:hover { background: rgba(255,255,255,0.12); color: #cfe3ff; }
+    body.dark-mode .active-indicator { background: linear-gradient(90deg, #3ea0ff, #8ec3ff); }
+
+    /* Dark mode toggle button */
+    .dark-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #0a84ff;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 1100;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark-mode .dark-toggle {
+      background: rgba(28,30,34,0.6);
+      color: #eaecef;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Bottom pill-shaped liquid glass nav bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: inset 0 1px 8px rgba(255,255,255,0.6),
+                  0 8px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      animation: slideUp 0.7s ease forwards;
+    }
+    .nav-link {
+      position: relative;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #0a84ff;
+      padding: 0.45rem 0.9rem;
+      border-radius: 22px;
+      transition: background 0.25s ease, transform 0.25s ease, color 0.25s ease;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.35);
+      transform: translateY(-2px);
+      color: #0059d6;
+    }
+    .active-indicator {
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      height: 3px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #0a84ff, #62a7ff);
+      width: 0;
+      transition: width 250ms ease, left 250ms ease;
+    }
+    .nav-link.active .active-indicator {
+      width: 70%;
+      left: 15%;
+    }
+
+    /* Main glass container */
+    .glass-container {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(42px) saturate(210%);
+      -webkit-backdrop-filter: blur(42px) saturate(210%);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow:
+        inset 0 1px 18px rgba(255,255,255,0.35),
+        0 18px 50px rgba(30, 60, 120, 0.25);
+      padding: 22px;
+      animation: fadeIn 0.9s ease forwards;
+    }
+
+    header {
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #0a84ff;
+      text-shadow: 0 2px 10px rgba(255,255,255,0.9);
+      animation: slideDown 0.8s ease forwards;
+    }
+
+    /* Search bar */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 1rem;
+      animation: fadeIn 1.1s ease forwards;
+    }
+    .search-input {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      font-size: 1rem;
+      color: #111;
+      outline: none;
+      box-shadow: inset 0 1px 6px rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .search-input::placeholder { color: #555; opacity: 0.8; }
+    .clear-btn {
+      padding: 0.6rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.28);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      color: #0a84ff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 200ms ease;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,0.7), 0 6px 18px rgba(50,100,180,0.18);
+    }
+    .clear-btn:hover { transform: translateY(-1px); }
+    .clear-btn:active { transform: translateY(0.5px) scale(0.98); }
+
+    /* Section titles */
+    .section-title {
+      margin: 0.5rem 0 0.8rem;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #0f1220;
+      opacity: 0.9;
+    }
+    body.dark-mode .section-title { color: #eaecef; }
+
+    /* Cards + animation */
+    .app-card {
+      margin: 14px 0;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: cardFadeUp 0.7s ease forwards;
+    }
+
+    /* Glass card layout: info left, button right-middle */
+    .card-glass {
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.18)),
+        rgba(255,255,255,0.18);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow:
+        inset 0 1px 10px rgba(255,255,255,0.6),
+        0 10px 28px rgba(50,100,180,0.18);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center; /* vertical middle alignment for button */
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+    .card-glass:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        inset 0 1px 10px rgba(255,255,255,0.6),
+        0 14px 32px rgba(50,100,180,0.25);
+    }
+
+    .card-info { display: flex; flex-direction: column; gap: 6px; }
+
+    .app-title {
+      font-weight: 700;
+      font-size: 1.06rem;
+      color: #0f1220;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.7);
+    }
+    .app-meta {
+      font-size: 0.92rem;
+      color: #2b2f3a;
+      opacity: 0.9;
+    }
+
+    /* Glossy iOS-style button */
+    .get-button {
+      padding: 0.68rem 1.5rem;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #ffffff;
+      background:
+        linear-gradient(160deg, rgba(10,132,255,0.98) 0%, rgba(10,132,255,0.85) 50%, rgba(10,132,255,0.75) 100%);
+      box-shadow:
+        0 8px 22px rgba(10,132,255,0.45),
+        inset 0 1px 6px rgba(255,255,255,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform 180ms ease, box-shadow 220ms ease, filter 200ms ease;
+      position: relative;
+      overflow: hidden;
+      justify-self: end; /* right side */
+    }
+    .get-button::before {
+      content: "";
+      position: absolute;
+      top: -120%;
+      left: -60%;
+      width: 220%;
+      height: 240%;
+      background:
+        linear-gradient(30deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 18%, transparent 36%),
+        radial-gradient(120px 60px at 40% 20%, rgba(255,255,255,0.5), transparent 60%);
+      transform: rotate(18deg);
+      opacity: 0;
+      transition: opacity 240ms ease;
+      pointer-events: none;
+    }
+    .get-button:hover::before { opacity: 1; }
+    .get-button:hover {
+      transform: translateY(-1px) scale(1.06);
+      box-shadow:
+        0 12px 28px rgba(10,132,255,0.55),
+        inset 0 1px 8px rgba(255,255,255,0.85);
+      filter: saturate(115%);
+    }
+    .get-button:active {
+      transform: translateY(0) scale(0.96);
+      box-shadow:
+        0 6px 16px rgba(10,132,255,0.6) inset,
+        0 4px 8px rgba(10,132,255,0.4);
+      filter: brightness(0.98) saturate(110%);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #2b2f3a;
+      margin-top: 1.4rem;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.85);
+      opacity: 0.9;
+      animation: fadeIn 1.2s ease forwards;
+    }
+    body.dark-mode footer { color: #b9c0c7; }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes cardFadeUp { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+    /* Utility */
+    .hidden { display: none !important; }
+
+    /* Smooth scroll for anchor links */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+  <!-- Dark mode toggle -->
+  <button class="dark-toggle" id="darkToggle">Dark Mode</button>
+
+  <!-- Bottom pill-shaped liquid glass navigation -->
+  <nav class="bottom-bar" aria-label="Pill navigation">
+    <a href="#dns" class="nav-link">DNS<div class="active-indicator"></div></a>
+    <a href="#esign" class="nav-link">ESign<div class="active-indicator"></div></a>
+    <a href="#about" class="nav-link">About<div class="active-indicator"></div></a>
+  </nav>
+
+  <div id="top" class="glass-container">
+    <header>ESign Install By TP67</header>
+
+    <!-- Glassy Search Bar -->
+    <div class="search-bar">
+      <input id="searchInput" class="search-input" type="text" placeholder="Search apps...">
+      <button id="clearBtn" class="clear-btn" type="button">Clear</button>
+    </div>
+
+    <!-- DNS section -->
+    <h2 id="dns" class="section-title">DNS Anti Revoke and Cert.zip</h2>
+    <div class="app-card" style="animation-delay:0.10s">
+      <div class="card-glass">
+        <div class="card-info">
+          <div class="app-title">DNS Anti Revoke</div>
+          <div class="app-meta">Install Before Installing apps</div>
+        </div>
+        <a class="get-button" href="https://tools.nezushub.vip/dns-revoke-blocker/">Install</a>
+      </div>
+    </div>
+
+    <!-- Cert zip -->
+    <div class="app-card" style="animation-delay:0.18s">
+      <div class="card-glass">
+        <div class="card-info">
+          <div class="app-title">Cert.zip</div>
+          <div class="app-meta">Required to Install .ipa files on ESign</div>
+        </div>
+        <a class="get-button" href="https://github.com/royilkom-alt/cert/raw/refs/heads/main/Cert%20AppleJr%203.zip">Download</a>
+      </div>
+    </div>
+
+    <!-- ESign section -->
+    <h2 id="esign" class="section-title">Signed ESign Direct Install</h2>
+    <div class="app-card" style="animation-delay:0.26s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Etisalat Emirates</div></div><a class="get-button" href="https://api.khoindvn.eu.org/k1Ycos">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.34s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Heavy Duty Truck</div></div><a class="get-button" href="https://api.khoindvn.io.vn/jA06Dp">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.42s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Guangzhou Huahan</div></div><a class="get-button" href="https://api.khoindvn.io.vn/SUvkkC">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.50s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">China Telecom</div></div><a class="get-button" href="https://api.khoindvn.io.vn/qylEe1">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.58s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Global Takeoff</div></div><a class="get-button" href="https://api.khoindvn.io.vn/yHH6NE">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.66s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Tianjin University</div></div><a class="get-button" href="https://api.khoindvn.io.vn/SXgmxb">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.74s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">VIETNAM JOINT STOCK COMMERCIAL BANK FOR INDUSTRY AND TRADE</div></div><a class="get-button" href="https://api.khoindvn.io.vn/7SxrmH">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.82s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Viet Telecom</div></div><a class="get-button" href="https://api.khoindvn.io.vn/KX3VBb">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.90s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Beijing Esensoft</div></div><a class="get-button" href="https://api.khoindvn.io.vn/rR9jps">GET</a></div></div>
+    <div class="app-card" style="animation-delay:0.98s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">CHIBA INSTITUDE OF TECHNOLOGY</div></div><a class="get-button" href="https://api.khoindvn.io.vn/SUvkkC">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.06s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">NREH ESTATE INFORMATION TECHNOLOGY</div></div><a class="get-button" href="https://api.khoindvn.io.vn/DoD29p">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.14s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Eryuan</div></div><a class="get-button" href="https://api.khoindvn.io.vn/OuUeFv">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.22s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">EEO Education</div></div><a class="get-button" href="https://api.khoindvn.io.vn/kKZQf7">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.30s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">TCL household Appliance Marketing</div></div><a class="get-button" href="https://api.khoindvn.io.vn/khDDZF">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.38s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">Wuiling Power Corp</div></div><a class="get-button" href="https://api.khoindvn.io.vn/jA06Dp">GET</a></div></div>
+    <div class="app-card" style="animation-delay:1.46s"><div class="card-glass"><div class="card-info"><div class="app-title">ESign</div><div class="app-meta">HDFC Bank Limited</div></div><a class="get-button" href="https://api.khoindvn.io.vn/1ZJIPP">GET</a></div></div>
+
+    <!-- About section -->
+    <h2 id="about" class="section-title">About</h2>
+    <div class="app-card" style="animation-delay:1.54s">
+      <div class="card-glass">
+        <div class="card-info">
+          <div class="app-title">Website Made By TP67</div>
+          <div class="app-meta">Made with Liquid Glass UI</div>
+        </div>
+        <a class="get-button" href="#top">Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>Website Made By TP67</footer>
+
+  <script>
+    // Dark mode toggle
+    const darkToggle = document.getElementById('darkToggle');
+    const DARK_KEY = 'tp67-dark-mode';
+    function applyDarkPref() {
+      const pref = localStorage.getItem(DARK_KEY);
+      const isDark = pref === 'true';
+      document.body.classList.toggle('dark-mode', isDark);
+      darkToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    }
+    applyDarkPref();
+    darkToggle.addEventListener('click', () => {
+      const nowDark = !document.body.classList.contains('dark-mode');
+      document.body.classList.toggle('dark-mode', nowDark);
+      localStorage.setItem(DARK_KEY, String(nowDark));
+      darkToggle.textContent = nowDark ? 'Light Mode' : 'Dark Mode';
+    });
+
+    // Live search filtering
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+    const cards = Array.from(document.querySelectorAll('.app-card'));
+    function normalize(text) { return (text || '').toLowerCase().trim(); }
+    function matches(card, query) {
+      if (!query) return true;
+      const title = card.querySelector('.app-title')?.textContent || '';
+      const meta = card.querySelector('.app-meta')?.textContent || '';
+      return normalize(title).includes(query) || normalize(meta).includes(query);
+    }
+    function filterCards() {
+      const q = normalize(searchInput.value);
+      cards.forEach(card => card.classList.toggle('hidden', !matches(card, q)));
+    }
+    searchInput.addEventListener('input', filterCards);
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      filterCards();
+      searchInput.focus();
+    });
+
+    // Bottom pill bar active state with sliding indicator
+    const navLinks = Array.from(document.querySelectorAll('.bottom-bar .nav-link'));
+    const sections = ['dns', 'esign', 'about', 'top'].map(id => document.getElementById(id));
+    function setActiveLinkById(id) {
+      navLinks.forEach(link => link.classList.remove('active'));
+      const active = navLinks.find(l => l.getAttribute('href') === '#' + id);
+      if (active) active.classList.add('active');
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActiveLinkById(entry.target.id);
+      });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0.1 });
+    sections.forEach(sec => sec && observer.observe(sec));
+
+    // Accessibility polish for nav
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        setTimeout(() => link.blur(), 300);
+      });
+    });
+  </script>
+</body>
+</html>
